@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8" />
+  <title data-i18n="admin_document_title">NestaCRM — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="icon" href="img/logo (2).svg" type="image/png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+  <div id="system-block-overlay"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255, 255, 255, 0.98); z-index: 9999999; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: not-allowed;">
+    <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+      <i class="fa-solid fa-lock" style="font-size: 80px; color: #ef4444; margin-bottom: 25px; display: block;"></i>
+      <h1 style="color: #1e293b; margin-bottom: 10px; font-family: 'Inter', sans-serif;"
+        data-i18n="system_blocked_title">Tizim vaqtincha bloklangan</h1>
+      <p style="color: #64748b; font-size: 18px; max-width: 400px;" data-i18n="system_blocked_desc">Ma'lum sabablarga
+        ko'ra tarifingiz to'xtatilgan. Iltimos, Super Admin bilan bog'laning.</p>
+      <div style="margin-top: 30px; font-weight: 600; color: #3b82f6;">
+        <i class="fa-brands fa-telegram"></i> @nestacrm_admin
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <button class="menu-toggle" id="menuToggleBtn">
+      <i class="fa-solid fa-list-ul"></i>
+    </button>
+
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h2><span class="nesta-text">Nesta</span><span class="crm-text">CRM</span></h2>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#dashboard" onclick="showSection('dashboard')" class="active">
+          <i class="fa-solid fa-chart-line"></i> <span data-i18n="dashboard"></span>
+        </a>
+        <a href="#add" onclick="showSection('add')">
+          <i class="fa-solid fa-folder-plus"></i> <span data-i18n="add_food_title"></span>
+        </a>
+        <a href="#report" onclick="showSection('report')" data-feature="finance">
+          <i class="fa-solid fa-chart-bar"></i> <span data-i18n="view_report"></span>
+        </a>
+        <a href="#menu" onclick="showSection('menu')">
+          <i class="fa-solid fa-list"></i> <span data-i18n="menu_list"></span>
+        </a>
+        <a href="#orders" onclick="showSection('orders')">
+          <i class="fa-solid fa-shopping-cart"></i> <span data-i18n="orders_list"></span>
+        </a>
+        <a href="#staff" onclick="showSection('staff')">
+          <i class="fa-solid fa-users"></i> <span data-i18n="staff_management"></span>
+        </a>
+        <a href="#crm" onclick="showSection('crm')">
+          <i class="fa-solid fa-address-card"></i> <span data-i18n="crm_nav"></span>
+        </a>
+        <a href="#reservations" onclick="showSection('reservations')" data-feature="reservations">
+          <i class="fa-solid fa-calendar-check"></i> <span data-i18n="reservations_nav"></span>
+        </a>
+        <a href="#feedback" onclick="showSection('feedback')">
+          <i class="fa-solid fa-comment"></i> <span data-i18n="feedback_nav"></span>
+        </a>
+        <a href="#notifications" onclick="showSection('notifications')">
+          <i class="fa-solid fa-bell"></i> <span data-i18n="notifications_nav"></span>
+        </a>
+        <a href="#roles" onclick="showSection('roles')">
+          <i class="fa-solid fa-user-tag"></i> <span data-i18n="roles_nav"></span>
+        </a>
+        <a href="#audit-log" onclick="showSection('audit-log')">
+          <i class="fa-solid fa-history"></i> <span data-i18n="audit_nav"></span>
+        </a>
+        <a href="#tables" onclick="showSection('tables')">
+          <i class="fa-solid fa-table"></i> <span data-i18n="tables_nav"></span>
+        </a>
+        <a href="#warehouse" onclick="showSection('warehouse')" data-feature="inventory">
+          <i class="fa-solid fa-warehouse"></i> <span data-i18n="warehouse_nav"></span>
+        </a>
+        <a href="#finance" onclick="showSection('finance')" data-feature="finance">
+          <i class="fa-solid fa-wallet"></i> <span data-i18n="finance_nav"></span>
+        </a>
+        <a href="#settings" onclick="showSection('settings')">
+          <i class="fa-solid fa-gear"></i> <span data-i18n="settings_nav"></span>
+        </a>
+      </nav>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="content">
+      <header class="header">
+        <h1 data-i18n="admin_title">Admin Panel</h1>
+
+        <div id="subTimerContainer" style="margin-left: 25px; display: flex; align-items: center;"></div>
+
+        <select id="langSelect">
+          <option value="uz" data-i18n="lang_uz">UZ</option>
+          <option value="ru" data-i18n="lang_ru">RU</option>
+          <option value="en" data-i18n="lang_en">EN</option>
+        </select>
+
+        <button type="button" class="btn" id="fullscreenBtn" onclick="toggleFullscreen()">
+          <span id="fullscreenBtnIcon">⛶</span> <span id="fullscreenBtnText" data-i18n="fullscreen">To'liq ekran</span>
+        </button>
+      </header>
+
+      <section id="dashboard" class="admin-section active-section" style="display:block">
+        <div id="chefStats" class="stats-grid">
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_today_orders">Bugungi buyurtmalar</h4><b id="totalOrdersToday">0</b>
+          </div>
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_active_orders">Faol buyurtmalar</h4><b id="activeOrders">0</b>
+          </div>
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_today_revenue">Bugungi tushum</h4><b id="totalRevenue">0</b>
+          </div>
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_active_chefs">Faol oshpazlar</h4><b id="activeChefsCount">0</b>
+          </div>
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_active_waiters">Faol ofitsiantlar</h4><b id="activeWaitersCount">0</b>
+          </div>
+          <div class="stat-card">
+            <h4 data-i18n="dashboard_busy_free_tables">Band / bo'sh stol</h4>
+            <b><span id="busyTablesCount">0</span> / <span id="freeTablesCount">0</span></b>
+          </div>
+          <div class="stat-card" onclick="showSection('reservations')" style="cursor:pointer">
+            <h4 data-i18n="dashboard_today_reservations">Bugungi bronlar</h4>
+            <b id="todayReservationsCount">0</b>
+          </div>
+        </div>
+      </section>
+
+      <section id="crm" class="admin-section" style="display:none">
+        <h2 data-i18n="crm_nav">CRM</h2>
+        <div id="crmStats"></div>
+        <input type="text" id="customerSearch" data-i18n-placeholder="customer_phone_placeholder"
+          placeholder="Mijoz ismi / telefon">
+        <div id="customerList"></div>
+        <button onclick="grantVipStatus()"
+          style="background: #ffc107; color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 15px;">
+          👑 <span data-i18n="grant_vip_btn">Mijozga VIP status berish</span>
+        </button>
+      </section>
+
+      <section id="reservations" class="admin-section" style="display:none">
+        <h2 data-i18n="reservations_title">Bronlar</h2>
+        <div id="reservationStats"></div>
+        <div id="reservationFilters"></div>
+        <div id="reservationForm"></div>
+        <div id="reservationList"></div>
+      </section>
+
+      <section id="feedback" class="admin-section" style="display:none">
+        <h2 data-i18n="feedback_title">Fikrlar</h2>
+        <div id="feedbackStats"></div>
+        <div id="feedbackFilters"></div>
+        <div id="feedbackList"></div>
+      </section>
+
+      <section id="notifications" class="admin-section" style="display:none">
+        <h2 data-i18n="notifications_title">Bildirishnomalar</h2>
+        <div id="notificationsList"></div>
+      </section>
+
+      <section id="roles" class="admin-section" style="display:none">
+        <h2 data-i18n="roles_title">Rollar va Ruxsatlar</h2>
+        <div id="rolesStats"></div>
+        <div class="form-grid">
+          <input type="text" id="rolesSearch" data-i18n-placeholder="search_role_user"
+            placeholder="Foydalanuvchi qidirish..." />
+        </div>
+        <div id="rolesTemplates"></div>
+        <table class="top-table">
+          <thead>
+            <tr>
+              <th data-i18n="user_name_label">Ism</th>
+              <th data-i18n="user_role_label">Rol</th>
+              <th data-i18n="user_status_label">Holat</th>
+              <th data-i18n="permissions_title">Ruxsatlar</th>
+              <th data-i18n="actions_label">Amallar</th>
+            </tr>
+          </thead>
+          <tbody id="rolesUsersTable"></tbody>
+        </table>
+      </section>
+
+      <section id="audit-log" class="admin-section" style="display:none">
+        <h2 data-i18n="audit_title">Audit jurnali</h2>
+        <div id="auditStats"></div>
+        <div class="form-grid">
+          <input type="text" id="auditSearch" data-i18n-placeholder="search_audit"
+            placeholder="Foydalanuvchi, amal yoki modul..." />
+          <select id="auditModuleFilter">
+            <option value="all" data-i18n="audit_module_all">Barcha modullar</option>
+            <option value="orders" data-i18n="permission_orders">Buyurtmalar</option>
+            <option value="menu" data-i18n="permission_menu">Menu</option>
+            <option value="tables" data-i18n="permission_tables">Stollar</option>
+            <option value="staff" data-i18n="permission_staff">Personal</option>
+            <option value="customers" data-i18n="permission_customers">Mijozlar</option>
+            <option value="roles" data-i18n="permission_roles">Rollar</option>
+            <option value="system" data-i18n="audit_module_system">Tizim</option>
+          </select>
+          <select id="auditSeverityFilter">
+            <option value="all" data-i18n="audit_severity_all">Barcha darajalar</option>
+            <option value="info" data-i18n="audit_severity_info">Ma'lumot</option>
+            <option value="warning" data-i18n="audit_severity_warning">Ogohlantirish</option>
+            <option value="critical" data-i18n="audit_severity_critical">Muhim</option>
+          </select>
+        </div>
+        <table class="top-table">
+          <thead>
+            <tr>
+              <th data-i18n="date_label">Sana</th>
+              <th data-i18n="user_name_label">Foydalanuvchi</th>
+              <th data-i18n="audit_module">Modul</th>
+              <th data-i18n="audit_action">Harakat</th>
+              <th data-i18n="audit_target">Nishon</th>
+              <th data-i18n="audit_severity">Daraja</th>
+              <th data-i18n="actions_label">Amallar</th>
+            </tr>
+          </thead>
+          <tbody id="auditLogTableBody"></tbody>
+        </table>
+
+        <!-- XATO TUZATILGAN JOY: reservations_title -> audit_history_title ga o'zgartirildi -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2 data-i18n="audit_history_title">Audit tarixi</h2>
+          <button onclick="window.openAuditLogModal()" class="btn" style="background: #4b5563; color: white;">
+            📜 <span data-i18n="view_history_btn">Tarixni ko'rish</span>
+          </button>
+        </div>
+      </section>
+
+      <section id="settings" class="admin-section" style="display:none">
+        <h2 data-i18n="settings_title">Sozlamalar</h2>
+        <div id="settingsForm"></div>
+        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
+      </section>
+
+      <section id="tables" class="admin-section" style="display:none">
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+          <h2 data-i18n="tables_title" style="margin: 0;">Stollar</h2>
+
+          <div class="table-limit-box"
+            style="display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e5e7eb; flex-wrap: wrap;">
+
+            <label data-i18n="max_tables" style="margin: 0; font-weight: 600;">Jami stollar:</label>
+            <input type="number" id="tablesCountInput" min="1"
+              style="width: 80px; padding: 6px; border: 1px solid #ccc; border-radius: 5px;">
+            <button class="btn btn-secondary btn-sm" onclick="saveTableSettings()" data-i18n="save_btn">Saqlash</button>
+
+            <div style="width: 2px; height: 20px; background: #ddd; margin: 0 5px;"></div>
+
+            <label style="margin: 0; font-weight: 600; color: #10b981;" data-i18n="add_table_label">➕ Stol
+              qo'shish:</label>
+            <input type="number" id="extraTablesInput" min="1" data-i18n-placeholder="how_many_placeholder"
+              placeholder="Nechta?"
+              style="width: 80px; padding: 6px; border: 2px solid #10b981; border-radius: 5px; outline: none;">
+            <button class="btn btn-primary btn-sm" onclick="window.addExtraTables()"
+              style="background: #10b981; border: none; font-weight: bold;" data-i18n="add_btn">Qo'shish</button>
+          </div>
+
+          <button class="btn btn-primary" id="downloadAllQRBtn" onclick="window.downloadAllTablesQR()">
+            <i class="fa-solid fa-qrcode"></i> <span data-i18n="download_all_qr">QR kodlarni yuklab olish (PDF)</span>
+          </button>
+        </div>
+
+        <div id="tablesStats" style="margin-bottom: 20px;"></div>
+        <div id="tablesGrid" class="tables-grid"></div>
+      </section>
+
+      <div id="qrPrintContainer" style="display: none; background: white; padding: 20px;"></div>
+      <section id="warehouse" class="admin-section" style="display:none">
+        <h2 data-i18n="warehouse_nav">Ombor va Masalliqlar</h2>
+
+        <!-- Masalliq qo'shish formasi -->
+        <div
+          style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:20px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+          <h3 style="margin-top:0; margin-bottom:16px; font-size:15px; color:#1e293b;">
+            <i class="fa-solid fa-plus-circle" style="color:#10b981;"></i>
+            <span data-i18n="add_ingredient_title"> Yangi masalliq qo'shish</span>
+          </h3>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+            <div style="display:flex; flex-direction:column; gap:4px; flex:2; min-width:160px;">
+              <label style="font-size:12px; font-weight:600; color:#64748b;" data-i18n="ingredient_name">Masalliq
+                nomi</label>
+              <input type="text" id="ing-name" data-i18n-placeholder="ingredient_name_placeholder"
+                placeholder="Masalliq nomi (masalan: Guruch)"
+                style="padding:9px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; outline:none;">
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:100px;">
+              <label style="font-size:12px; font-weight:600; color:#64748b;" data-i18n="stock_label">Miqdor</label>
+              <input type="number" id="ing-stock" min="0" step="0.01" data-i18n-placeholder="stock_placeholder"
+                placeholder="0"
+                style="padding:9px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; outline:none;">
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:120px;">
+              <label style="font-size:12px; font-weight:600; color:#64748b;" data-i18n="unit_label">Birlik</label>
+              <select id="ing-unit"
+                style="padding:9px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; outline:none; background:#fff; cursor:pointer;">
+                <option value="gr" data-i18n="unit_gr">gr (gramm)</option>
+                <option value="kg" data-i18n="unit_kg">kg (kilogram)</option>
+                <option value="ml" data-i18n="unit_ml">ml (millilitr)</option>
+                <option value="l" data-i18n="unit_l">l (litr)</option>
+                <option value="dona" data-i18n="unit_dona">dona (soni)</option>
+                <option value="osh_q" data-i18n="unit_osh_q">osh qoshiq</option>
+                <option value="choy_q" data-i18n="unit_choy_q">choy qoshiq</option>
+                <option value="piyola" data-i18n="unit_piyola">piyola</option>
+                <option value="bunch" data-i18n="unit_bunch">bog'lam</option>
+                <option value="dash" data-i18n="unit_dash">chimdim</option>
+              </select>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:100px;">
+              <label style="font-size:12px; font-weight:600; color:#64748b;" data-i18n="min_stock_label">Min.
+                zaxira</label>
+              <input type="number" id="ing-min-stock" min="0" step="0.01" placeholder="0"
+                style="padding:9px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px; outline:none;">
+            </div>
+            <button onclick="window.addIngredient()"
+              style="padding:9px 20px; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; white-space:nowrap; height:40px; align-self:flex-end;">
+              <i class="fa-solid fa-plus"></i> <span data-i18n="add_btn">Qo'shish</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Masalliqlar jadvali -->
+        <table class="top-table">
+          <thead>
+            <tr>
+              <th data-i18n="ingredient_name">Nomi</th>
+              <th data-i18n="unit_label">Birlik</th>
+              <th data-i18n="stock_label">Zaxira</th>
+              <th data-i18n="actions_label">Amallar</th>
+            </tr>
+          </thead>
+          <tbody id="ingredients-list"></tbody>
+        </table>
+      </section>
+
+      <section id="finance" class="admin-section" style="display:none">
+        <h2 style="margin-bottom: 20px;" data-i18n="finance_title">💰 Ish haqi va Moliya</h2>
+        <div class="kpi-dashboard"
+          style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb; margin-bottom: 25px;">
+          <h3 style="margin-top:0;" data-i18n="salary_settings_title">Stavka va Foizlarni sozlash</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div>
+              <label style="font-size: 13px; color: #6b7280;" data-i18n="chef_point_rate_label">Oshpaz (har bir ball
+                uchun UZS):</label>
+              <input type="number" id="chefPointRate" value="1000"
+                style="width:100%; padding:8px; border-radius:6px; border:1px solid #ddd;">
+            </div>
+            <div>
+              <label style="font-size: 13px; color: #6b7280;" data-i18n="waiter_percent_rate_label">Ofitsiant (sotuvdan
+                foiz %):</label>
+              <input type="number" id="waiterPercentRate" value="3"
+                style="width:100%; padding:8px; border-radius:6px; border:1px solid #ddd;">
+            </div>
+            <button class="btn btn-primary" onclick="window.saveSalarySettings()" style="align-self: flex-end;"
+              data-i18n="save_btn">Saqlash</button>
+          </div>
+        </div>
+        <div id="salaryReportGrid"
+          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;"></div>
+      </section>
+
+      <section id="add" class="admin-section" style="display:none">
+        <h2 data-i18n="add_food_title">Taom qo'shish</h2>
+        <div class="form-grid">
+          <input type="text" id="foodNameInput" data-i18n-placeholder="food_name_placeholder" placeholder="Taom nomi" />
+          <input type="number" id="addPrice" data-i18n-placeholder="price_placeholder" placeholder="Narxi" />
+
+          <select id="category">
+            <option value="" data-i18n="select_category">Kategoriya tanlang</option>
+          </select>
+          <select id="subcategory">
+            <option value="" data-i18n="select_subcategory">Subkategoriya tanlang</option>
+          </select>
+
+          <input type="text" id="addImgUrlInput" data-i18n-placeholder="food_img_url_placeholder"
+            placeholder="Rasm manzilini (URL) kiriting" />
+
+          <button id="addMenuBtn" class="btn primary" data-i18n="add_btn">Qo'shish</button>
+        </div>
+      </section>
+
+      <section id="report" class="admin-section" style="display:none">
+        <h2 data-i18n="view_report_title">Hisobot</h2>
+
+        <h4 data-i18n="date_filter">Sana filteri</h4>
+        <div class="date-filter">
+          <select id="dateMode">
+            <option value="range" data-i18n="date_range">Oraliq</option>
+            <option value="day" data-i18n="date_day">Bugun</option>
+            <option value="month" data-i18n="date_month">Oy</option>
+          </select>
+          <input type="date" id="reportFrom" />
+          <input type="date" id="reportTo" />
+        </div>
+
+        <h4 data-i18n="payment_type">To'lov usuli</h4>
+        <div class="payment-filter">
+          <label><input type="checkbox" id="filterCash" checked /><span data-i18n="payment_cash">Naqd</span></label>
+          <label><input type="checkbox" id="filterPayme" checked /><span data-i18n="payment_payme">Payme</span></label>
+          <label><input type="checkbox" id="filterClick" checked /><span data-i18n="payment_click">Click</span></label>
+          <label><input type="checkbox" id="filterPaidOnly" /><span data-i18n="payment_paid_only">Faqat
+              to'langanlar</span></label>
+        </div>
+
+        <div class="form-grid">
+          <button class="btn primary" onclick="generateRangeReport()" data-i18n="view_report_btn">Hisobotni
+            ko'rish</button>
+          <button class="btn" onclick="downloadCSV()" data-i18n="download_csv">CSV yuklash</button>
+          <button class="btn" onclick="downloadExcel()" data-i18n="download_excel">Excel yuklash</button>
+        </div>
+
+        <h3 data-i18n="top_foods">Top taomlar</h3>
+        <table class="top-table">
+          <thead>
+            <tr>
+              <th data-i18n="number_sign">#</th>
+              <th data-i18n="food_name_label">Taom nomi</th>
+              <th data-i18n="sold_qty">Sotilgan</th>
+              <th data-i18n="total_sum_label">Jami summa</th>
+            </tr>
+          </thead>
+          <tbody id="topFoodsTable"></tbody>
+        </table>
+
+        <h4 style="margin-top: 20px; color: #dc3545;" data-i18n="least_sold_foods">Eng kam sotilgan taomlar</h4>
+        <div class="table-container">
+          <table class="top-table">
+            <thead>
+              <tr>
+                <th data-i18n="number_sign">#</th>
+                <th data-i18n="food_name_label">Taom</th>
+                <th data-i18n="sold_qty">Sotilgan soni</th>
+                <th data-i18n="revenue_label">Tushum</th>
+              </tr>
+            </thead>
+            <tbody id="leastFoodsTable"></tbody>
+          </table>
+        </div>
+
+        <div id="paymentSummary" class="payment-summary"></div>
+
+        <div class="report-charts-header">
+          <h3 data-i18n="charts_title">Diagrammalar</h3>
+          <button class="btn refresh-btn" onclick="refreshReports()" data-i18n="refresh_btn">🔄 <span
+              data-i18n="refresh">Yangilash</span></button>
+        </div>
+
+        <div class="report-charts">
+          <div class="chart-box"><canvas id="ordersChart"></canvas></div>
+          <div class="chart-box"><canvas id="statusChart"></canvas></div>
+          <div class="chart-box"><canvas id="topFoodsChart"></canvas></div>
+        </div>
+
+        <div class="chart-actions">
+          <button class="btn" onclick="downloadChartPNG('topFoodsChart')" data-i18n="download_png">PNG yuklash</button>
+          <button class="btn" onclick="downloadChartPDF('topFoodsChart')" data-i18n="download_pdf">PDF yuklash</button>
+        </div>
+
+        <h3 data-i18n="category_sales">Kategoriya bo'yicha sotuv</h3>
+        <table class="top-table">
+          <thead>
+            <tr>
+              <th data-i18n="category_label">Kategoriya</th>
+              <th data-i18n="sold_qty">Sotilgan</th>
+              <th data-i18n="revenue_label">Daromad</th>
+            </tr>
+          </thead>
+          <tbody id="categorySalesTable"></tbody>
+        </table>
+
+        <div id="reportResult" class="report-result"></div>
+      </section>
+
+      <section id="menu" class="admin-section" style="display:none">
+        <div class="menu-header">
+          <h2 data-i18n="menu_list">Menyu</h2>
+          <input type="text" id="menuSearch" class="menu-search" data-i18n-placeholder="search_food_placeholder"
+            placeholder="Taom qidirish..." />
+          <div class="menu-actions-top">
+            <button class="btn danger" onclick="deleteSelectedMenus()" data-i18n="delete_selected_btn">Tanlanganlarni
+              o'chirish</button>
+            <button class="btn danger outline" onclick="deleteAllMenus()" data-i18n="delete_all_btn">Hammasini
+              o'chirish</button>
+          </div>
+        </div>
+
+        <div id="menuStatsBlock" style="
+          background: var(--bg-card, #fff);
+          border: 1px solid var(--border-color, #e2e8f0);
+          border-radius: 16px;
+          padding: 20px 24px;
+          margin: 0 0 24px;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        ">
+          <div
+            style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:22px;">📊</span>
+              <div>
+                <h3 style="margin:0;font-size:16px;font-weight:700;color:var(--text-primary,#1e293b);"
+                  data-i18n="top_foods_title">Eng ko'p sotilgan taomlar</h3>
+                <p id="menuStatsMeta" data-i18n="stats_loading"
+                  style="margin:0;font-size:12px;color:var(--text-secondary,#94a3b8);">
+                  Yuklanmoqda...</p>
+              </div>
+            </div>
+            <button onclick="window.toggleMenuStats()" id="menuStatsToggleBtn" style="
+              background:none;border:1px solid var(--border-color,#e2e8f0);
+              border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;
+              color:var(--text-secondary,#64748b);display:flex;align-items:center;gap:6px;
+            ">
+              <span id="menuStatsToggleIcon">▲</span> <span data-i18n="close_btn">Yopish</span>
+            </button>
+          </div>
+
+          <div id="menuStatsContent">
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;align-items:center;">
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <label
+                  style="font-size:11px;font-weight:600;color:var(--text-secondary,#64748b);text-transform:uppercase;letter-spacing:.5px;"
+                  data-i18n="stats_period_label">Davr</label>
+                <select id="statsFilterPeriod" onchange="window.renderMenuStats()" style="
+                  border:1px solid var(--border-color,#e2e8f0);border-radius:8px;
+                  padding:7px 10px;font-size:13px;background:var(--bg-body,#f8fafc);
+                  color:var(--text-primary,#1e293b);outline:none;cursor:pointer;min-width:130px;
+                ">
+                  <option value="all" data-i18n="stats_all_time">Barcha vaqt</option>
+                  <option value="today" data-i18n="today">Bugun</option>
+                  <option value="week" selected data-i18n="stats_last_7_days">Oxirgi 7 kun</option>
+                  <option value="month" data-i18n="stats_last_30_days">Oxirgi 30 kun</option>
+                  <option value="custom" data-i18n="stats_custom_range">O'zgartirish...</option>
+                </select>
+              </div>
+
+              <div id="statsCustomRange" style="display:none;display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;">
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-secondary,#64748b);"
+                    data-i18n="stats_date_from">Dan</label>
+                  <input type="date" id="statsDateFrom" onchange="window.renderMenuStats()" style="
+                    border:1px solid var(--border-color,#e2e8f0);border-radius:8px;
+                    padding:7px 10px;font-size:13px;background:var(--bg-body,#f8fafc);
+                    color:var(--text-primary,#1e293b);outline:none;
+                  ">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-secondary,#64748b);"
+                    data-i18n="stats_date_to">Gacha</label>
+                  <input type="date" id="statsDateTo" onchange="window.renderMenuStats()" style="
+                    border:1px solid var(--border-color,#e2e8f0);border-radius:8px;
+                    padding:7px 10px;font-size:13px;background:var(--bg-body,#f8fafc);
+                    color:var(--text-primary,#1e293b);outline:none;
+                  ">
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <label
+                  style="font-size:11px;font-weight:600;color:var(--text-secondary,#64748b);text-transform:uppercase;letter-spacing:.5px;"
+                  data-i18n="stats_top_label">Top</label>
+                <select id="statsFilterTop" onchange="window.renderMenuStats()" style="
+                  border:1px solid var(--border-color,#e2e8f0);border-radius:8px;
+                  padding:7px 10px;font-size:13px;background:var(--bg-body,#f8fafc);
+                  color:var(--text-primary,#1e293b);outline:none;cursor:pointer;
+                ">
+                  <option value="5" data-i18n="stats_top_5">Top 5</option>
+                  <option value="10" selected data-i18n="stats_top_10">Top 10</option>
+                  <option value="15" data-i18n="stats_top_15">Top 15</option>
+                  <option value="20" data-i18n="stats_top_20">Top 20</option>
+                </select>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <label
+                  style="font-size:11px;font-weight:600;color:var(--text-secondary,#64748b);text-transform:uppercase;letter-spacing:.5px;"
+                  data-i18n="stats_view_label">Ko'rinish</label>
+                <div style="display:flex;gap:4px;">
+                  <button id="statsBtnBar" onclick="window.setStatsChartType('bar')" style="
+                    border:1px solid #22c55e;border-radius:7px;padding:6px 10px;
+                    cursor:pointer;font-size:13px;background:#22c55e;color:#fff;font-weight:600;
+                  " data-i18n="chart_bar">📊 Bar</button>
+                  <button id="statsBtnPie" onclick="window.setStatsChartType('pie')" style="
+                    border:1px solid var(--border-color,#e2e8f0);border-radius:7px;padding:6px 10px;
+                    cursor:pointer;font-size:13px;background:var(--bg-body,#f8fafc);color:var(--text-primary,#1e293b);
+                  " data-i18n="chart_pie">🥧 Pie</button>
+                  <button id="statsBtnDoughnut" onclick="window.setStatsChartType('doughnut')" style="
+                    border:1px solid var(--border-color,#e2e8f0);border-radius:7px;padding:6px 10px;
+                    cursor:pointer;font-size:13px;background:var(--bg-body,#f8fafc);color:var(--text-primary,#1e293b);
+                  " data-i18n="chart_donut">🍩 Donut</button>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <label
+                  style="font-size:11px;font-weight:600;color:var(--text-secondary,#64748b);text-transform:uppercase;letter-spacing:.5px;"
+                  data-i18n="stats_metric_label">Metrika</label>
+                <select id="statsFilterMetric" onchange="window.renderMenuStats()" style="
+                  border:1px solid var(--border-color,#e2e8f0);border-radius:8px;
+                  padding:7px 10px;font-size:13px;background:var(--bg-body,#f8fafc);
+                  color:var(--text-primary,#1e293b);outline:none;cursor:pointer;
+                ">
+                  <option value="qty" data-i18n="stats_metric_qty">Miqdor (dona)</option>
+                  <option value="sum" data-i18n="stats_metric_sum">Tushum (so'm)</option>
+                </select>
+              </div>
+
+              <div style="margin-top:18px;display:flex;align-items:flex-end;">
+                <button onclick="window.renderMenuStats()" style="
+                  background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;
+                  border:none;border-radius:8px;padding:8px 16px;cursor:pointer;
+                  font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;
+                " data-i18n="stats_update_btn">🔄 Yangilash</button>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:20px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:280px;min-height:300px;position:relative;">
+                <div id="menuStatsChartLoader" style="
+                  position:absolute;inset:0;display:flex;align-items:center;
+                  justify-content:center;flex-direction:column;gap:10px;
+                  background:var(--bg-card,#fff);z-index:2;border-radius:12px;
+                ">
+                  <div
+                    style="width:36px;height:36px;border:4px solid #e2e8f0;border-top:4px solid #22c55e;border-radius:50%;animation:spin 0.8s linear infinite;">
+                  </div>
+                  <span style="font-size:13px;color:#94a3b8;" data-i18n="stats_loading">Yuklanmoqda...</span>
+                </div>
+                <canvas id="menuTopFoodsChart" style="width:100%;height:300px;"></canvas>
+              </div>
+
+              <div style="flex:1;min-width:260px;">
+                <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                  <thead>
+                    <tr style="background:var(--bg-body,#f8fafc);">
+                      <th
+                        style="padding:8px 10px;text-align:left;font-weight:600;color:var(--text-secondary,#64748b);border-bottom:2px solid var(--border-color,#e2e8f0);"
+                        data-i18n="number_sign">#</th>
+                      <th
+                        style="padding:8px 10px;text-align:left;font-weight:600;color:var(--text-secondary,#64748b);border-bottom:2px solid var(--border-color,#e2e8f0);"
+                        data-i18n="food_name_label">Taom nomi</th>
+                      <th
+                        style="padding:8px 10px;text-align:right;font-weight:600;color:var(--text-secondary,#64748b);border-bottom:2px solid var(--border-color,#e2e8f0);"
+                        data-i18n="qty_col_label">Dona</th>
+                      <th
+                        style="padding:8px 10px;text-align:right;font-weight:600;color:var(--text-secondary,#64748b);border-bottom:2px solid var(--border-color,#e2e8f0);"
+                        data-i18n="revenue_label">Tushum</th>
+                    </tr>
+                  </thead>
+                  <tbody id="menuStatsTableBody">
+                    <tr>
+                      <td colspan="4" style="text-align:center;padding:20px;color:#94a3b8;" data-i18n="stats_loading">
+                        Yuklanmoqda...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="menuStatsSummary" style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;"></div>
+          </div>
+        </div>
+
+        <div id="menuList" class="menu-list"></div>
+      </section>
+
+      <section id="orders" class="admin-section" style="display:none">
+        <h2 data-i18n="orders_list">Buyurtmalar</h2>
+        <div class="orders-filters">
+          <select id="filterPaymentStatus">
+            <option value="all" data-i18n="all_payment_statuses">Barcha to'lov holatlari</option>
+            <option value="paid" data-i18n="status_paid">To'langan</option>
+            <option value="unpaid" data-i18n="status_unpaid">To'lanmagan</option>
+          </select>
+          <select id="filterPaymentType">
+            <option value="all" data-i18n="all_payment_methods">Barcha to'lov turlari</option>
+            <option value="cash" data-i18n="payment_cash">Naqd</option>
+            <option value="payme" data-i18n="payment_payme">Payme</option>
+            <option value="click" data-i18n="payment_click">Click</option>
+          </select>
+          <select id="filterOrderCategory">
+            <option value="all" data-i18n="all_categories">Barcha kategoriyalar</option>
+          </select>
+          <select id="filterOrderSubcategory">
+            <option value="all" data-i18n="all_subcategories">Barcha subkategoriyalar</option>
+          </select>
+          <select id="chefFilter">
+            <option value="all" data-i18n="all_chefs_option">Barcha oshpazlar</option>
+          </select>
+        </div>
+        <div id="ordersList" class="orders-list"></div>
+        <div class="orders-actions">
+          <button class="btn danger" onclick="deleteAllOrdersAndFreeTables()" data-i18n="delete_all_orders_btn">Barcha
+            buyurtmalarni o'chirish</button>
+        </div>
+      </section>
+
+      <section id="staff" class="admin-section" style="display:none">
+        <h2 data-i18n="staff_management">Xodimlar boshqaruvi</h2>
+        <div class="staff-tabs">
+          <button onclick="showStaffTab('chef')" class="tab-btn active">👨‍🍳 <span
+              data-i18n="chefs_label">Oshpazlar</span></button>
+          <button onclick="showStaffTab('waiter')" class="tab-btn">🧑‍🍳 <span
+              data-i18n="waiters_label">Ofitsiantlar</span></button>
+        </div>
+
+        <div id="chefTab" class="staff-tab">
+
+          <div class="kpi-dashboard"
+            style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #e5e7eb;">
+
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h3
+                  style="margin-top: 0; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; color: #111827; font-size: 18px;">
+                  <i class="fa-solid fa-trophy" style="color: #f59e0b; font-size: 24px;"></i> <span
+                    data-i18n="chef_kpi_title">Oshpazlar Reytingi</span>
+                </h3>
+                <p style="font-size: 13px; color: #6b7280; margin: 0;" data-i18n="chef_kpi_desc">Eng tezkor va xatosiz
+                  ishlayotgan oshpazlar liderboardi.</p>
+              </div>
+
+              <div
+                style="display: flex; background: #f3f4f6; padding: 4px; border-radius: 8px; border: 1px solid #e5e7eb;">
+                <button onclick="window.updateChefKPIs('today')" id="kpiBtn-today" data-i18n="today_btn"
+                  style="padding: 6px 12px; border: none; background: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: 0.2s;">Bugun</button>
+                <button onclick="window.updateChefKPIs('week')" id="kpiBtn-week" data-i18n="this_week_btn"
+                  style="padding: 6px 12px; border: none; background: transparent; color: #6b7280; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s;">Shu
+                  hafta</button>
+                <button onclick="window.updateChefKPIs('month')" id="kpiBtn-month" data-i18n="this_month_btn"
+                  style="padding: 6px 12px; border: none; background: transparent; color: #6b7280; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s;">Shu
+                  oy</button>
+              </div>
+            </div>
+
+            <div id="chefKpiGrid"
+              style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;"></div>
+          </div>
+
+          <div class="add-chef" style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center;">
+            <input type="text" id="chefName" data-i18n-placeholder="chef_name_placeholder" placeholder="Oshpaz ismi"
+              autocomplete="off">
+            <form onsubmit="return false;" autocomplete="off" style="margin:0;padding:0;display:contents;">
+              <input type="text" name="username" style="display:none;" aria-hidden="true" autocomplete="username">
+              <input type="password" id="chefPassword" data-i18n-placeholder="password_4_digits" maxlength="4"
+                placeholder="Parol (4 raqam)" autocomplete="new-password">
+            </form>
+            <button onclick="addChef()" data-i18n="add_btn" class="btn btn-primary">Qo'shish</button>
+          </div>
+          <div id="chefList" class="staff-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;"></div>
+
+        </div>
+        <div id="waiterTab" class="staff-tab" style="display: none;">
+
+          <div class="kpi-dashboard"
+            style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #e5e7eb;">
+
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h3
+                  style="margin-top: 0; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; color: #111827; font-size: 18px;">
+                  <i class="fa-solid fa-medal" style="color: #3b82f6; font-size: 24px;"></i> <span
+                    data-i18n="waiter_kpi_title">Ofitsiantlar Reytingi</span>
+                </h3>
+                <p style="font-size: 13px; color: #6b7280; margin: 0;" data-i18n="waiter_kpi_desc">Eng ko'p sotuv qilgan
+                  va faol ofitsiantlar liderboardi.</p>
+              </div>
+
+              <div
+                style="display: flex; background: #f3f4f6; padding: 4px; border-radius: 8px; border: 1px solid #e5e7eb;">
+                <button onclick="window.updateWaiterKPIs('today')" id="waiterKpiBtn-today" data-i18n="today_btn"
+                  style="padding: 6px 12px; border: none; background: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: 0.2s;">Bugun</button>
+                <button onclick="window.updateWaiterKPIs('week')" id="waiterKpiBtn-week" data-i18n="this_week_btn"
+                  style="padding: 6px 12px; border: none; background: transparent; color: #6b7280; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s;">Shu
+                  hafta</button>
+                <button onclick="window.updateWaiterKPIs('month')" id="waiterKpiBtn-month" data-i18n="this_month_btn"
+                  style="padding: 6px 12px; border: none; background: transparent; color: #6b7280; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s;">Shu
+                  oy</button>
+              </div>
+            </div>
+
+            <div id="waiterKpiGrid"
+              style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;"></div>
+          </div>
+
+          <div class="add-staff-form"
+            style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="waiterName" data-i18n-placeholder="waiter_name_placeholder"
+              placeholder="Ofitsiant ismi"
+              style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; flex: 1; min-width: 200px; outline: none;"
+              autocomplete="off">
+
+            <form onsubmit="return false;" autocomplete="off" style="margin:0;padding:0;">
+              <input type="text" name="username" style="display:none;" aria-hidden="true" autocomplete="username">
+              <input type="password" id="waiterPassword" data-i18n-placeholder="password_4_digits"
+                placeholder="Parol (4 raqam)" maxlength="4" autocomplete="new-password"
+                style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 150px; outline: none;">
+            </form>
+
+            <button class="btn btn-primary" onclick="window.addWaiter()"
+              style="padding: 10px 15px; border-radius: 8px; border: none; background: #3b82f6; color: white; cursor: pointer; font-weight: bold; white-space: nowrap;">
+              <i class="fa-solid fa-plus"></i> <span data-i18n="add_btn">Qo'shish</span>
+            </button>
+          </div>
+
+          <div id="waiterList" class="staff-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;"></div>
+
+        </div>
+      </section>
+
+      <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+          <h3 data-i18n="edit_food_title">Taomni tahrirlash</h3>
+          <input type="text" id="editName" data-i18n-placeholder="food_name_placeholder" placeholder="Taom nomi" />
+          <input type="number" id="editPrice" data-i18n-placeholder="price_placeholder" placeholder="Narxi" />
+          <select id="editCategory">
+            <option value="" data-i18n="select_category">Kategoriya tanlang</option>
+          </select>
+          <select id="editSubCategory">
+            <option value="" data-i18n="select_subcategory">Subkategoriya tanlang</option>
+          </select>
+          <input type="text" id="editImgUrlInput" data-i18n-placeholder="food_img_url_placeholder"
+            placeholder="Yangi rasm manzilini (URL) kiriting" />
+          <input type="number" id="editPrepTime" data-i18n-placeholder="prep_time_placeholder"
+            placeholder="Tayyorlanish vaqti (min)" />
+          <div class="modal-actions">
+            <button class="btn primary" onclick="saveMenuItem()" data-i18n="save_btn">Saqlash</button>
+            <button class="btn" onclick="closeEditModal()" data-i18n="cancel_btn">Bekor qilish</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="roleModal" class="modal hidden">
+        <div class="modal-content">
+          <h3 id="roleModalTitle" data-i18n="role_detail_title">Rol va permissionlar</h3>
+          <input type="text" id="roleUserName" disabled />
+          <select id="roleUserRole">
+            <option value="admin" data-i18n="role_admin">Admin</option>
+            <option value="manager" data-i18n="role_manager">Menejer</option>
+            <option value="cashier" data-i18n="role_cashier">Kassir</option>
+            <option value="waiter" data-i18n="role_waiter">Ofitsiant</option>
+            <option value="chef" data-i18n="role_chef">Oshpaz</option>
+            <option value="client" data-i18n="role_client">Mijoz</option>
+          </select>
+          <div id="rolePermissionsGrid" class="form-grid"></div>
+          <div class="modal-actions">
+            <button class="btn primary" onclick="saveRolePermissions()" data-i18n="save_btn">Saqlash</button>
+            <button class="btn" onclick="closeRoleModal()" data-i18n="cancel_btn">Bekor qilish</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="auditModal" class="modal hidden">
+        <div class="modal-content">
+          <h3 id="auditModalTitle" data-i18n="audit_detail_title">Audit tafsilotlari</h3>
+          <div id="auditModalBody"></div>
+          <div class="modal-actions">
+            <button class="btn" onclick="closeAuditModal()" data-i18n="close_btn">Yopish</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="tableDetailModal" class="modal hidden"></div>
+
+      <div id="staffStatsModal" class="modal hidden">
+        <div class="modal-content">
+          <h2 data-i18n="staff_statistics">Xodimlar statistikasi</h2>
+          <div class="stats-controls">
+            <select id="statsPeriod">
+              <option value="today" data-i18n="today_label">Bugun</option>
+              <option value="week" data-i18n="week_label">Hafta</option>
+              <option value="month" data-i18n="month_label">Oy</option>
+            </select>
+            <button type="button" onclick="loadStaffStats()" data-i18n="view_btn">Ko'rish</button>
+            <button type="button" onclick="closeStaffStats()" data-i18n="close_btn">Yopish</button>
+          </div>
+          <div id="staffStatsContent"></div>
+          <div class="staff-charts">
+            <div class="chart-box"><canvas id="staffOrdersChart"></canvas></div>
+            <div class="chart-box"><canvas id="staffTimeChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <div id="supportModal" class="support-modal hidden">
+    <div class="support-modal-content">
+      <div class="support-header">
+        <h3 data-i18n="support_center">Qo'llab-quvvatlash markazi</h3>
+        <button class="btn-close" onclick="toggleSupportModal()">✖</button>
+      </div>
+
+      <div class="support-body">
+        <div class="support-item" onclick="openSupportBot()">
+          <div class="support-icon"><i class="fab fa-telegram-plane"></i></div>
+          <div class="support-text">
+            <h4 data-i18n="complaints_suggestions">Taklif va shikoyatlar</h4>
+            <p data-i18n="bot_description">Telegram bot orqali ism va raqamingiz bilan yuboring</p>
+          </div>
+        </div>
+
+        <div class="support-item" onclick="openUserManual()">
+          <div class="support-icon"><i class="fas fa-book"></i></div>
+          <div class="support-text">
+            <h4 data-i18n="user_manual">Tizimdan foydalanish qo'llanmasi</h4>
+            <p data-i18n="manual_description">Video va matnli yo'riqnomalar</p>
+          </div>
+        </div>
+
+        <div class="support-footer">
+          <p data-i18n="support_working_hours">Ish vaqti: 09:00 - 20:00</p>
+          <p><span data-i18n="support_contact">Aloqa</span>: +998 90 123 45 67</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="recipe-modal" class="modal"
+    style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
+    <div style="background: white; width: 500px; margin: 50px auto; padding: 20px; border-radius: 15px;">
+      <h3 id="recipe-food-name" data-i18n="food_recipe_title">Taom retsepti</h3>
+      <hr>
+      <div id="recipe-items-container"></div>
+      <button class="btn btn-primary" onclick="addIngredientRowToRecipe()">➕ <span
+          data-i18n="add_ingredient_btn">Masalliq qo'shish</span></button>
+      <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn btn-secondary" onclick="closeRecipeModal()" data-i18n="close_btn">Yopish</button>
+        <button class="btn btn-success" id="save-recipe-btn" onclick="window.saveRecipe()">💾 <span
+            data-i18n="save_btn">Saqlash</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="staffFinanceModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 id="financeModalTitle" data-i18n="staff_finance_title">Xodim Moliyasi</h3>
+        <button onclick="window.closeModal(document.getElementById('staffFinanceModal'))">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="staffFinanceStats"
+          style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="fixed_salary_label">Asosiy oylik (Fixed Salary):</label>
+          <input type="number" id="modal-fixed-salary" style="width:100%; padding:10px; margin-bottom:10px;">
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="sales_commission_label">Sotuvdan foiz (%):</label>
+          <input type="number" id="modal-commission" style="width:100%; padding:10px; margin-bottom:10px;">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+          <button class="btn btn-success" onclick="window.saveStaffFinanceSettings()" style="flex: 1;"
+            data-i18n="save_btn">Saqlash</button>
+          <button class="btn btn-primary" onclick="window.addStaffAdjustmentFromModal()" style="flex: 1;">➕ <span
+              data-i18n="bonus_penalty_btn">Bonus/Jarima</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="upgradePlanModal" class="modal hidden"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div
+      style="background: #fff; width: 350px; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+      <div
+        style="background: #FEE2E2; color: #EF4444; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 15px auto;">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <h3 style="margin-bottom: 10px; color: #1F2937; font-size: 18px; font-weight: bold;" data-i18n="plan_limit_title">Funksiya cheklangan</h3>
+      <p style="color: #6B7280; font-size: 14px; margin-bottom: 20px; line-height: 1.5;" data-i18n="plan_feature_not_available">
+        Sizning hozirgi tarifingizda ushbu bo'limdan foydalanish imkoniyati o'chirilgan. Iltimos, imkoniyatlarni
+        kengaytirish uchun tarifingizni yangilang yoki Superadmin bilan bog'laning.
+      </p>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button onclick="window.closeUpgradeModal()"
+          style="padding: 10px 20px; background: #F3F4F6; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; flex: 1;" data-i18n="close_btn">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="notification" class="notification"></div>
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script type="module" src="js/langs.js"></script>
+  <script type="module" src="js/shared.js"></script>
+  <script type="module" src="js/i18n.js"></script>
+  <script type="module" src="js/admin.js"></script>
+
+  <script type="module">
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const _fbCfg = {
+      apiKey: "AIzaSyCGCCIP3eFg40bOEENDLGcrw9c484ySCHQ",
+      authDomain: "restoran-30d51.firebaseapp.com",
+      databaseURL: "https://restoran-30d51-default-rtdb.firebaseio.com",
+      projectId: "restoran-30d51",
+      storageBucket: "restoran-30d51.firebasestorage.app",
+      messagingSenderId: "862261129762",
+      appId: "1:862261129762:web:5577e6821b4ad7ea4e507b"
+    };
+    const _fbApp = getApps().length ? getApps()[0] : initializeApp(_fbCfg);
+    const _db = getDatabase(_fbApp);
+
+    function _applyLogo(url) {
+      if (!url) return;
+      document.querySelectorAll(
+        'img[src*="logo-cropped"], img[src*="logo (2)"], img[src*="logo%20(2)"]'
+      ).forEach(img => {
+        img.src = url;
+        img.style.objectFit = "contain";
+      });
+    }
+
+    const _restId = new URLSearchParams(location.search).get("rest")
+      || new URLSearchParams(location.search).get("id")
+      || localStorage.getItem("restaurantId");
+
+    if (_restId) {
+      onValue(ref(_db, `restaurants/${_restId}/settings/restaurantLogoUrl`), snap => {
+        if (snap.exists() && snap.val()) _applyLogo(snap.val());
+      });
+    }
+  </script>
+
+</body>
+
+</html>
+<script>(function () {
+    const btn = document.getElementById('menuToggleBtn');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (!btn || !sidebar) return;
+    function openSidebar() {
+      sidebar.classList.add('open');
+      if (overlay) overlay.classList.add('visible');
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      if (overlay) overlay.classList.remove('visible');
+    }
+    btn.addEventListener('click', function () {
+      sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+    });
+    if (overlay) overlay.addEventListener('click', closeSidebar);
+    document.querySelectorAll('.sidebar-nav a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        if (window.innerWidth <= 768) closeSidebar();
+      });
+    });
+  })();
+</script>

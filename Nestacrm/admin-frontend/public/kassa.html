@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kassa Bo'limi</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1117;
+      --surface:   #181c27;
+      --card:      #1e2333;
+      --border:    #2a3048;
+      --accent:    #4f7ef8;
+      --accent2:   #6ee7b7;
+      --danger:    #f87171;
+      --warn:      #fbbf24;
+      --text:      #e8eaf0;
+      --muted:     #7a8099;
+      --success:   #34d399;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 17px; letter-spacing: -.3px;
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+    }
+    .header-right {
+      display: flex; align-items: center; gap: 20px;
+      font-size: 13px; color: var(--muted);
+    }
+    .clock { font-variant-numeric: tabular-nums; }
+
+    /* ─── MAIN ─── */
+    main {
+      flex: 1;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+    }
+
+    .page-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 28px;
+    }
+
+    /* ─── SEARCH BOX ─── */
+    .search-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 28px;
+    }
+    .search-card h2 {
+      font-size: 19px; font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .search-card p {
+      font-size: 13px; color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .search-row {
+      display: flex; gap: 12px;
+    }
+    .input-wrap {
+      flex: 1; position: relative;
+    }
+    .input-wrap svg {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted); pointer-events: none;
+    }
+    #orderInput {
+      width: 100%; padding: 13px 16px 13px 44px;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 15px; font-family: 'Inter', sans-serif;
+      outline: none; transition: border-color .2s;
+    }
+    #orderInput::placeholder { color: var(--muted); }
+    #orderInput:focus { border-color: var(--accent); }
+
+    .btn {
+      padding: 13px 28px;
+      border: none; border-radius: 10px;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: opacity .18s, transform .12s;
+      white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn:hover { opacity: .88; }
+    .btn:active { transform: scale(.97); }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-success {
+      background: var(--success);
+      color: #0f1117;
+      width: 100%;
+      padding: 15px;
+      font-size: 15px;
+      border-radius: 12px;
+      justify-content: center;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text);
+    }
+    .btn:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+    .btn:disabled:hover { opacity: .45; }
+
+    /* ─── LOADING SPINNER ─── */
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── ERROR / HINT ─── */
+    #errorMsg {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(248,113,113,.12);
+      border: 1px solid rgba(248,113,113,.3);
+      color: var(--danger);
+      font-size: 13px;
+    }
+
+    /* ─── CONFIG WARNING ─── */
+    #configWarning {
+      display: none;
+      margin-bottom: 20px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      background: rgba(251,191,36,.1);
+      border: 1px solid rgba(251,191,36,.3);
+      color: var(--warn);
+      font-size: 13px;
+    }
+    #configWarning strong { display: block; margin-bottom: 4px; }
+
+    /* ─── ORDER CARD ─── */
+    #orderSection { display: none; }
+
+    .order-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 24px; gap: 12px; flex-wrap: wrap;
+    }
+    .order-header h2 { font-size: 21px; font-weight: 700; }
+    .order-header .sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+    .badge {
+      padding: 5px 13px;
+      border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .4px;
+    }
+    .badge-wait { background: rgba(251,191,36,.15); color: var(--warn); border: 1px solid rgba(251,191,36,.3); }
+    .badge-paid { background: rgba(52,211,153,.15); color: var(--success); border: 1px solid rgba(52,211,153,.3); }
+    .badge-new  { background: rgba(79,126,248,.15); color: var(--accent); border: 1px solid rgba(79,126,248,.3); }
+
+    .info-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-bottom: 24px;
+    }
+    @media(max-width:520px){ .info-grid { grid-template-columns: 1fr; } }
+
+    .info-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .info-box label {
+      font-size: 11px; font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase; letter-spacing: .6px;
+      display: block; margin-bottom: 6px;
+    }
+    .info-box .val { font-size: 14px; font-weight: 500; }
+
+    /* ─── ITEMS TABLE ─── */
+    .section-label {
+      font-size: 12px; font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase; letter-spacing: .6px;
+      margin-bottom: 10px;
+    }
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: var(--card);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .items-table thead th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 11px; font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase; letter-spacing: .5px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .items-table thead th:last-child { text-align: right; }
+    .items-table tbody td {
+      padding: 13px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .items-table tbody tr:last-child td { border-bottom: none; }
+    .items-table tbody td:last-child { text-align: right; }
+    .qty-badge {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 12px; color: var(--muted);
+    }
+
+    /* ─── TOTALS ─── */
+    .totals-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+    }
+    .total-row {
+      display: flex; justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+    .total-row .label { color: var(--muted); }
+    .total-row.discount .val { color: var(--accent2); }
+    .total-row.grand {
+      border-top: 1px solid var(--border);
+      margin-top: 8px; padding-top: 14px;
+      font-size: 20px; font-weight: 700;
+    }
+    .total-row.grand .label { color: var(--text); }
+
+    /* ─── PAYMENT METHODS ─── */
+    .pay-section { margin-bottom: 24px; }
+    .pay-methods {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px; margin-top: 10px;
+    }
+    @media(max-width:520px){ .pay-methods { grid-template-columns: 1fr 1fr; } }
+    .pay-method {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color .2s, background .2s;
+      font-size: 13px;
+    }
+    .pay-method .icon { font-size: 22px; display: block; margin-bottom: 6px; }
+    .pay-method:hover { border-color: var(--accent); background: rgba(79,126,248,.06); }
+    .pay-method.selected {
+      border-color: var(--accent);
+      background: rgba(79,126,248,.12);
+      color: var(--accent);
+    }
+    .pay-method.disabled-method {
+      opacity: .4; pointer-events: none;
+    }
+
+    /* ─── SUCCESS SCREEN ─── */
+    #successSection {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 32px;
+      text-align: center;
+    }
+    .success-icon {
+      width: 72px; height: 72px;
+      background: rgba(52,211,153,.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 32px;
+    }
+    #successSection h2 { font-size: 22px; margin-bottom: 8px; }
+    #successSection p { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
+    #successSection .receipt {
+      display: inline-block;
+      margin: 20px 0;
+      padding: 16px 28px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-align: left;
+      font-size: 13px;
+      min-width: 240px;
+    }
+    #successSection .receipt .r { display: flex; justify-content: space-between; gap: 24px; padding: 4px 0; }
+    #successSection .receipt .r .lbl { color: var(--muted); }
+
+    /* ─── SEPARATOR ─── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+    .new-btn-wrap { text-align: center; margin-top: 24px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🏪</div>
+    Kassa Tizimi
+  </div>
+  <div class="header-right">
+    <span id="kassirName">Kassir</span>
+    <span class="clock" id="clock"></span>
+  </div>
+</header>
+
+<main>
+  <div class="page-title">Kassa bo'limi</div>
+
+  <!-- CONFIG WARNING -->
+  <div id="configWarning">
+    <strong>⚠️ Restoran ID topilmadi</strong>
+    URL ga <code>?rest=RESTORAN_ID</code> qo'shing yoki avval client sahifasiga kiring.
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-card">
+    <h2>Buyurtmani qidirish</h2>
+    <p>Mijoz <strong>Hisob so'rash</strong> bosganda olingan <strong>Kassa ID</strong> ni kiriting</p>
+    <div class="search-row">
+      <div class="input-wrap">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input id="orderInput" type="number" min="1000" max="9999" maxlength="4"
+               placeholder="4 xonali Kassa ID (masalan: 4827)" autocomplete="off" />
+      </div>
+      <button class="btn btn-primary" id="searchBtn" onclick="searchOrder()">
+        <span id="searchBtnText">Qidirish</span>
+      </button>
+    </div>
+    <div id="errorMsg"></div>
+  </div>
+
+  <!-- ORDER DETAILS -->
+  <div id="orderSection">
+    <div class="order-header">
+      <div>
+        <h2 id="oId">—</h2>
+        <div class="sub" id="oDate">—</div>
+      </div>
+      <span class="badge badge-wait" id="oStatus">Kutilmoqda</span>
+    </div>
+
+    <!-- Client info -->
+    <div class="section-label">Buyurtma ma'lumotlari</div>
+    <div class="info-grid" style="margin-bottom:24px">
+      <div class="info-box">
+        <label>Stol raqami</label>
+        <div class="val" id="cTable">—</div>
+      </div>
+      <div class="info-box">
+        <label>Telefon</label>
+        <div class="val" id="cPhone">—</div>
+      </div>
+    </div>
+
+    <!-- Items -->
+    <div class="section-label">Buyurtma tarkibi</div>
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Mahsulot</th>
+          <th>Soni</th>
+          <th>Narxi</th>
+          <th>Jami</th>
+        </tr>
+      </thead>
+      <tbody id="itemsBody"></tbody>
+    </table>
+
+    <!-- Totals -->
+    <div class="totals-box">
+      <div class="total-row">
+        <span class="label">Jami (chegirmasiz)</span>
+        <span class="val" id="tSubtotal">—</span>
+      </div>
+      <div class="total-row discount" id="discountRow" style="display:none">
+        <span class="label">Chegirma</span>
+        <span class="val" id="tDiscount">—</span>
+      </div>
+      <div class="total-row grand">
+        <span class="label">To'lash kerak</span>
+        <span class="val" id="tTotal">—</span>
+      </div>
+    </div>
+
+    <!-- Payment -->
+    <div class="pay-section">
+      <div class="section-label">To'lov usulini tanlang</div>
+      <div class="pay-methods">
+        <div class="pay-method" onclick="selectMethod('Naqd pul')" id="pm-0">
+          <span class="icon">💵</span> Naqd pul
+        </div>
+        <div class="pay-method" onclick="selectMethod('Karta')" id="pm-1">
+          <span class="icon">💳</span> Karta
+        </div>
+        <div class="pay-method" onclick="selectMethod('Click')" id="pm-2">
+          <span class="icon">📱</span> Click
+        </div>
+        <div class="pay-method" onclick="selectMethod('Payme')" id="pm-3">
+          <span class="icon">🔵</span> Payme
+        </div>
+        <div class="pay-method" onclick="selectMethod('Uzum Bank')" id="pm-4">
+          <span class="icon">🟠</span> Uzum Bank
+        </div>
+        <div class="pay-method" onclick="selectMethod('Muddatli')" id="pm-5">
+          <span class="icon">📅</span> Muddatli
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-success" id="payBtn" onclick="processPayment()" disabled>
+      To'lov usulini tanlang
+    </button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div id="successSection">
+    <div class="success-icon">✅</div>
+    <h2>To'lov muvaffaqiyatli!</h2>
+    <p id="sOrderId">—</p>
+    <div class="receipt">
+      <div class="r"><span class="lbl">Stol</span><span id="sTable">—</span></div>
+      <div class="r"><span class="lbl">To'lov usuli</span><span id="sMethod">—</span></div>
+      <div class="r"><span class="lbl">Summa</span><span id="sTotal">—</span></div>
+      <div class="r"><span class="lbl">Sana & vaqt</span><span id="sDate">—</span></div>
+    </div>
+    <p style="color:var(--muted);font-size:12px">✅ To'lov Firebase ga saqlandi</p>
+    <div class="new-btn-wrap">
+      <button class="btn btn-outline" onclick="resetAll()">Yangi buyurtma</button>
+    </div>
+  </div>
+</main>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, get, update, query, orderByChild, equalTo }
+    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+  // ── Firebase config (client.js dan olingan) ──
+  const firebaseConfig = {
+    apiKey:            "AIzaSyCGCCIP3eFg40bOEENDLGcrw9c484ySCHQ",
+    authDomain:        "restoran-30d51.firebaseapp.com",
+    databaseURL:       "https://restoran-30d51-default-rtdb.firebaseio.com",
+    projectId:         "restoran-30d51",
+    storageBucket:     "restoran-30d51.firebasestorage.app",
+    messagingSenderId: "your-sender-id",
+    appId:             "your-app-id"
+  };
+
+  const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  // ── Restaurant ID ──
+  const urlParams = new URLSearchParams(window.location.search);
+  const restaurantId =
+    urlParams.get("rest") ||
+    localStorage.getItem("restaurantId") ||
+    localStorage.getItem("clientRestaurantId");
+
+  if (!restaurantId) {
+    document.getElementById("configWarning").style.display = "block";
+  }
+
+  const BASE_PATH = `restaurants/${restaurantId}`;
+
+  // ── Global state ──
+  let currentOrder    = null;   // { firebaseKey, data }
+  let selectedMethod  = null;
+  const PAY_LABELS    = ['Naqd pul','Karta','Click','Payme','Uzum Bank','Muddatli'];
+
+  // ── Soat ──
+  function updateClock() {
+    document.getElementById("clock").textContent =
+      new Date().toLocaleTimeString("uz-UZ", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // ── Formatlash ──
+  function fmt(n) {
+    return Number(n).toLocaleString("uz-UZ") + " so'm";
+  }
+
+  function fmtDate(ts) {
+    if (!ts) return "—";
+    return new Date(Number(ts)).toLocaleString("uz-UZ");
+  }
+
+  // ── Qidirish ──
+  window.searchOrder = async function () {
+    if (!restaurantId) {
+      showError("⚠️ Restoran ID topilmadi. URL ga ?rest=ID qo'shing.");
+      return;
+    }
+
+    const inputVal = document.getElementById("orderInput").value.trim();
+    const kassaCode = inputVal;
+
+    if (!inputVal || inputVal.length < 4) {
+      showError("⚠️ 4 xonali Kassa ID kiriting.");
+      return;
+    }
+
+    setSearchLoading(true);
+    hideError();
+    document.getElementById("orderSection").style.display    = "none";
+    document.getElementById("successSection").style.display  = "none";
+
+    try {
+      // orders collection ichidan kassaCode bo'yicha qidirish
+      const ordersRef  = ref(db, `${BASE_PATH}/orders`);
+      const ordersSnap = await get(ordersRef);
+
+      if (!ordersSnap.exists()) {
+        showError(`❌ Hali hech qanday buyurtma yo'q.`);
+        return;
+      }
+
+      const allOrders = ordersSnap.val();
+      let foundKey    = null;
+      let foundData   = null;
+
+      for (const [key, order] of Object.entries(allOrders)) {
+        if (String(order.kassaCode) === String(kassaCode)) {
+          foundKey  = key;
+          foundData = order;
+          break;
+        }
+      }
+
+      if (!foundKey) {
+        showError(`❌ "${kassaCode}" Kassa ID bilan buyurtma topilmadi. Raqamni tekshiring.`);
+        return;
+      }
+
+      currentOrder = { firebaseKey: foundKey, data: foundData };
+      renderOrder(currentOrder);
+      document.getElementById("orderSection").style.display = "block";
+      document.getElementById("orderSection").scrollIntoView({ behavior: "smooth", block: "start" });
+
+    } catch (err) {
+      console.error("Firebase xatoligi:", err);
+      showError("❌ Firebase dan ma'lumot olishda xatolik: " + err.message);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  // ── Buyurtmani render qilish ──
+  function renderOrder({ firebaseKey, data }) {
+    const o = data;
+
+    // Header
+    document.getElementById("oId").textContent =
+      `Buyurtma #${o.orderNumber || firebaseKey.slice(-6)}  ·  Kassa ID: ${o.kassaCode || "—"}`;
+    document.getElementById("oDate").textContent =
+      "Vaqt: " + fmtDate(o.createdAt);
+
+    // Status
+    const statusEl = document.getElementById("oStatus");
+    const isPaid   = o.status === "to'landi" || o.status === "paid" ||
+                     o.payment?.paid === true  || o.payment?.approved === true;
+
+    if (isPaid) {
+      statusEl.textContent  = "✅ To'langan";
+      statusEl.className    = "badge badge-paid";
+    } else if (o.status === "yangi") {
+      statusEl.textContent  = "🆕 Yangi";
+      statusEl.className    = "badge badge-new";
+    } else {
+      statusEl.textContent  = "⏳ Kutilmoqda";
+      statusEl.className    = "badge badge-wait";
+    }
+
+    // Info boxes
+    document.getElementById("cTable").textContent = o.table ? `Stol ${o.table}` : "—";
+    document.getElementById("cPhone").textContent =
+      o.customerPhone || o.clientPhone || "—";
+
+    // Items
+    const tbody = document.getElementById("itemsBody");
+    tbody.innerHTML = "";
+    const itemsObj  = o.items || {};
+    const itemsList = Object.values(itemsObj);
+    let subtotal    = 0;
+
+    itemsList.forEach((item, i) => {
+      const lineTotal = Number(item.price) * Number(item.qty);
+      subtotal += lineTotal;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td style="color:var(--muted)">${i + 1}</td>
+        <td>${item.name || "—"}</td>
+        <td><span class="qty-badge">× ${item.qty}</span></td>
+        <td style="color:var(--muted)">${fmt(item.price)}</td>
+        <td style="font-weight:600">${fmt(lineTotal)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Totals
+    const totalPayable = Number(o.total) || subtotal;
+    const discountAmt  = Number(o.discount) || 0;
+
+    document.getElementById("tSubtotal").textContent = fmt(subtotal);
+
+    if (discountAmt > 0) {
+      document.getElementById("discountRow").style.display = "flex";
+      document.getElementById("tDiscount").textContent     = "−" + fmt(discountAmt);
+    } else {
+      document.getElementById("discountRow").style.display = "none";
+    }
+
+    document.getElementById("tTotal").textContent = fmt(totalPayable);
+
+    // Payment buttons state
+    selectedMethod = null;
+    document.querySelectorAll(".pay-method").forEach(el => {
+      el.classList.remove("selected", "disabled-method");
+    });
+
+    const payBtn = document.getElementById("payBtn");
+
+    if (isPaid) {
+      payBtn.textContent   = "✅ To'lov allaqachon amalga oshirilgan";
+      payBtn.disabled      = true;
+      payBtn.style.background = "var(--border)";
+      payBtn.style.color      = "var(--muted)";
+      document.querySelectorAll(".pay-method").forEach(el => el.classList.add("disabled-method"));
+    } else {
+      payBtn.textContent      = "To'lov usulini tanlang";
+      payBtn.disabled         = true;
+      payBtn.style.background = "";
+      payBtn.style.color      = "";
+    }
+  }
+
+  // ── To'lov usulini tanlash ──
+  window.selectMethod = function (method) {
+    if (!currentOrder) return;
+    const isPaid = currentOrder.data.status === "to'landi" ||
+                   currentOrder.data.payment?.paid === true;
+    if (isPaid) return;
+
+    selectedMethod = method;
+    document.querySelectorAll(".pay-method").forEach(el => el.classList.remove("selected"));
+
+    const idx = PAY_LABELS.indexOf(method);
+    if (idx >= 0) document.getElementById("pm-" + idx).classList.add("selected");
+
+    const total  = Number(currentOrder.data.total) || 0;
+    const payBtn = document.getElementById("payBtn");
+    payBtn.disabled  = false;
+    payBtn.textContent = `💰 ${fmt(total)} — ${method} orqali to'lash`;
+  };
+
+  // ── To'lovni amalga oshirish ──
+  window.processPayment = async function () {
+    if (!currentOrder || !selectedMethod) return;
+    if (!restaurantId) { showError("⚠️ Restoran ID yo'q"); return; }
+
+    const payBtn = document.getElementById("payBtn");
+    payBtn.disabled   = true;
+    payBtn.innerHTML  = '<span class="spinner"></span> Saqlanmoqda...';
+
+    const { firebaseKey, data } = currentOrder;
+    const now     = Date.now();
+    const nowStr  = new Date(now).toLocaleString("uz-UZ");
+
+    try {
+      const updates = {};
+      updates[`${BASE_PATH}/orders/${firebaseKey}/status`]             = "to'landi";
+      updates[`${BASE_PATH}/orders/${firebaseKey}/paidAt`]             = now;
+      updates[`${BASE_PATH}/orders/${firebaseKey}/payment/paid`]       = true;
+      updates[`${BASE_PATH}/orders/${firebaseKey}/payment/approved`]   = true;
+      updates[`${BASE_PATH}/orders/${firebaseKey}/payment/method`]     = selectedMethod;
+      updates[`${BASE_PATH}/orders/${firebaseKey}/payment/paidAt`]     = now;
+      updates[`${BASE_PATH}/orders/${firebaseKey}/payment/kassir`]     = "kassa";
+
+      // Stolni bo'shatish
+      if (data.table) {
+        updates[`${BASE_PATH}/tables/${data.table}/status`]   = "free";
+        updates[`${BASE_PATH}/tables/${data.table}/busy`]     = false;
+        updates[`${BASE_PATH}/tables/${data.table}/orderId`]  = null;
+      }
+
+      await update(ref(db), updates);
+
+      // currentOrder ni yangilaymiz
+      currentOrder.data.status         = "to'landi";
+      currentOrder.data.payment        = { paid: true, approved: true, method: selectedMethod };
+
+      // Success screen
+      document.getElementById("orderSection").style.display   = "none";
+      const ss = document.getElementById("successSection");
+      ss.style.display = "block";
+
+      document.getElementById("sOrderId").textContent = `🧾 Buyurtma #${data.orderNumber || firebaseKey.slice(-6)}  ·  Kassa ID: ${data.kassaCode || "—"}`;
+      document.getElementById("sTable").textContent   = data.table ? `Stol ${data.table}` : "—";
+      document.getElementById("sMethod").textContent  = selectedMethod;
+      document.getElementById("sTotal").textContent   = fmt(Number(data.total) || 0);
+      document.getElementById("sDate").textContent    = nowStr;
+
+      ss.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    } catch (err) {
+      console.error("To'lov xatoligi:", err);
+      payBtn.disabled = false;
+      payBtn.textContent = "❌ Xatolik — qayta urinib ko'ring";
+      showError("Firebase xatoligi: " + err.message);
+    }
+  };
+
+  // ── Reset ──
+  window.resetAll = function () {
+    currentOrder    = null;
+    selectedMethod  = null;
+    document.getElementById("orderInput").value             = "";
+    hideError();
+    document.getElementById("orderSection").style.display   = "none";
+    document.getElementById("successSection").style.display = "none";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // ── UI helpers ──
+  function showError(msg) {
+    const el = document.getElementById("errorMsg");
+    el.textContent    = msg;
+    el.style.display  = "block";
+  }
+  function hideError() {
+    document.getElementById("errorMsg").style.display = "none";
+  }
+  function setSearchLoading(loading) {
+    const btn  = document.getElementById("searchBtn");
+    const txt  = document.getElementById("searchBtnText");
+    btn.disabled = loading;
+    txt.innerHTML = loading
+      ? '<span class="spinner" style="border-top-color:#fff;border-color:rgba(255,255,255,.3);"></span>'
+      : "Qidirish";
+  }
+
+  // ── Enter tugmasi ──
+  document.getElementById("orderInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") searchOrder();
+  });
+</script>
+
+</body>
+</html>

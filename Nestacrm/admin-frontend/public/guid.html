@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="guide_title">NestaCRM - Yo'riqnoma</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #1f2937;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            max-width: 700px;
+            width: 100%;
+            position: relative;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header i { font-size: 40px; color: #10b981; margin-bottom: 10px; }
+        .header h1 { margin: 0; font-size: 24px; color: #111827; }
+        .header p { color: #6b7280; font-size: 15px; margin-top: 8px; }
+        .role-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: transform 0.2s ease;
+        }
+        .role-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-color: #10b981; }
+        .role-icon {
+            width: 45px; height: 45px;
+            background: #ecfdf5; color: #10b981;
+            border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .role-info h3 { margin: 0 0 5px 0; font-size: 16px; color: #1f2937; }
+        .role-info p { margin: 0; font-size: 14px; color: #6b7280; line-height: 1.5; }
+        .back-btn {
+            display: inline-block; margin-top: 20px; padding: 10px 20px;
+            background: #f3f4f6; color: #4b5563; text-decoration: none;
+            border-radius: 8px; font-weight: 500; transition: all 0.2s;
+        }
+        .back-btn:hover { background: #e5e7eb; color: #111827; }
+        
+        .lang-select-wrapper {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .lang-select-wrapper select {
+            padding: 6px 10px; border-radius: 6px; border: 1px solid #ddd;
+            background: #fff; cursor: pointer; font-family: 'Inter', sans-serif;
+            font-weight: 500; outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="lang-select-wrapper">
+        <select id="langSelect">
+            <option value="uz">UZ</option>
+            <option value="ru">RU</option>
+            <option value="en">EN</option>
+        </select>
+    </div>
+
+    <div class="header">
+        <i class="fas fa-book-open"></i>
+        <h1 data-i18n="guide_heading">Tizimdan foydalanish yo'riqnomasi</h1>
+        <p data-i18n="guide_desc">NestaCRM tizimining rollari va ularning vazifalari</p>
+    </div>
+
+    <div class="role-card">
+        <div class="role-icon"><i class="fas fa-crown"></i></div>
+        <div class="role-info">
+            <h3 data-i18n="role_superadmin_title">Super Admin (Tizim Egasi)</h3>
+            <p data-i18n="role_superadmin_desc">Barcha restoranlarni nazorat qiladi. Yangi restoranlar qo'shish, ularga subdomen ajratish va tariflarini belgilash huquqiga ega.</p>
+        </div>
+    </div>
+
+    <div class="role-card">
+        <div class="role-icon"><i class="fas fa-store"></i></div>
+        <div class="role-info">
+            <h3 data-i18n="role_admin_title">Admin (Restoran Boshqaruvchisi)</h3>
+            <p data-i18n="role_admin_desc">Faqat o'z restoranini boshqaradi. Taomlar menyusini tahrirlaydi, xodimlarni ishga oladi va moliyaviy statistikalarni kuzatadi.</p>
+        </div>
+    </div>
+
+    <div class="role-card">
+        <div class="role-icon"><i class="fas fa-utensils"></i></div>
+        <div class="role-info">
+            <h3 data-i18n="role_chef_title">Oshpaz (Chef / KDS)</h3>
+            <p data-i18n="role_chef_desc">Oshxona monitori orqali kiradi. Mijozlar buyurtmasini jonli qabul qiladi, tayyorlash vaqtini belgilaydi va taomlarni "Stop-list"ga tushiradi.</p>
+        </div>
+    </div>
+
+    <div class="role-card">
+        <div class="role-icon"><i class="fas fa-concierge-bell"></i></div>
+        <div class="role-info">
+            <h3 data-i18n="role_waiter_title">Ofitsiant (Waiter)</h3>
+            <p data-i18n="role_waiter_desc">Shaxsiy smartfoni orqali kiradi. O'ziga biriktirilgan stollarni nazorat qiladi, mijozlarning chaqiruvlarini va tayyor bo'lgan ovqatlarni ko'radi.</p>
+        </div>
+    </div>
+
+    <div class="role-card">
+        <div class="role-icon"><i class="fas fa-qrcode"></i></div>
+        <div class="role-info">
+            <h3 data-i18n="role_client_title">Mijoz (Client)</h3>
+            <p data-i18n="role_client_desc">Parol va loginsiiz, stoldagi QR kod orqali tizimga kiradi. Elektron menyudan ovqat tanlaydi va Telegram bot orqali buyurtmani tasdiqlaydi.</p>
+        </div>
+    </div>
+
+    <div style="text-align: center;">
+        <a href="login.html" class="back-btn"><i class="fas fa-arrow-left"></i> <span data-i18n="back_to_login_btn">Orqaga qaytish</span></a>
+    </div>
+</div>
+
+<script type="module">
+    import { applyLang, getLang, setLang } from './js/i18n.js';
+    import './js/langs.js';
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const langSelect = document.getElementById("langSelect");
+        if(langSelect) {
+            langSelect.value = getLang();
+            applyLang();
+            langSelect.addEventListener("change", (e) => {
+                setLang(e.target.value);
+                applyLang();
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="chef_document_title">NestaCRM — Oshpaz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/chef.css?v=200">
+  <link rel="icon" href="img/logo (2).svg" type="image/png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+
+  <div id="system-block-overlay" style="
+    display:none; position:fixed; top:0; left:0;
+    width:100vw; height:100vh;
+    background:rgba(255,255,255,.98);
+    z-index:9999999;
+    flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center; cursor:not-allowed;">
+    <div style="
+      background:#fff; padding:40px 48px;
+      border-radius:24px;
+      box-shadow:0 20px 60px rgba(0,0,0,.12);
+      max-width:420px; width:90%;">
+      <div style="
+        width:80px; height:80px; border-radius:50%;
+        background:linear-gradient(135deg,#fee2e2,#fecaca);
+        display:flex; align-items:center; justify-content:center;
+        margin:0 auto 24px; box-shadow:0 8px 24px rgba(239,68,68,.2);">
+        <i class="fa-solid fa-lock" style="font-size:32px; color:#ef4444;"></i>
+      </div>
+      <h1 style="
+        color:#0f172a; margin-bottom:10px;
+        font-family:'Plus Jakarta Sans',sans-serif;
+        font-size:22px; font-weight:800;" data-i18n="system_blocked_title">Tizim vaqtincha bloklangan</h1>
+      <p style="
+        color:#64748b; font-size:15px; line-height:1.6;
+        max-width:320px; margin:0 auto;" data-i18n="system_blocked_desc">
+      </p>
+      <div style="
+        margin-top:28px; font-weight:700; color:#2563eb;
+        font-size:15px; display:flex; align-items:center;
+        justify-content:center; gap:8px;">
+        <i class="fa-brands fa-telegram"></i> @nestacrm_admin
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       HEADER
+  ══════════════════════════════════ -->
+  <header class="chef-header">
+
+    <aside class="prep-sidebar">
+      <h3 data-i18n="prep_menu_title">🍽 Menyu va tayyor vaqt</h3>
+      <div id="prepMenuList"></div>
+      <div id="subTimerContainer" style="margin-left:20px;"></div>
+    </aside>
+
+    <div class="chef-filter">
+      <select id="chefFilter">
+        <option value="all" data-i18n="all_items"></option>
+      </select>
+    </div>
+
+    <div class="chef-filters">
+      <select id="categoryFilter">
+        <option value="all" data-i18n="all_categories"></option>
+      </select>
+      <select id="subFilter">
+        <option value="all" data-i18n="all_subcategories"></option>
+      </select>
+    </div>
+
+    <div class="header-actions">
+      <select id="langSelect" class="lang-select">
+        <option value="uz" data-i18n="lang_uz">UZ</option>
+        <option value="ru" data-i18n="lang_ru">RU</option>
+        <option value="en" data-i18n="lang_en">EN</option>
+      </select>
+
+      <span id="newOrdersBadge" class="badge" style="display:none;">0</span>
+    </div>
+
+    <div id="chefSettingsBlock" style="
+      display:none;
+      background:#fff3cd;
+      padding:10px 18px;
+      border-radius:12px;
+      gap:18px;
+      align-items:center;
+      margin-top:4px;
+      width:100%;
+      flex-wrap:wrap;
+      border:1px solid #ffe69c;">
+      <b data-i18n="kitchen_management">👨‍🍳 Oshxona boshqaruvi:</b>
+      <label style="display:flex; align-items:center; gap:8px; font-size:14px;">
+        <span data-i18n="normal_time_mins">Odatiy vaqt:</span>
+        <input type="number" id="chefSetNormalTime"
+          style="width:68px; height:38px; padding:0 10px; border-radius:10px; border:1.5px solid #d1d5db;"
+          onchange="updateGlobalChefTime(this.value)">
+        <span data-i18n="minute_short">min</span>
+      </label>
+      <label style="cursor:pointer; font-weight:700; display:flex; align-items:center; gap:8px; font-size:14px;">
+        <input type="checkbox" id="chefToggleFastOrder" onchange="toggleGlobalFastOrder(this.checked)"
+          style="width:18px; height:18px; accent-color:#22c55e;">
+        <span data-i18n="fast_order_active_toggle">⚡ Tezkor xizmatni yoqish</span>
+      </label>
+    </div>
+
+  </header>
+
+  <div id="chefsTodayStats" class="chefs-today-stats"></div>
+
+  <div id="chefStatsBox" class="chef-stats-box"></div>  <main class="container">
+
+    <section class="orders-section">
+      <h2 data-i18n="active_orders_title">🔥 Faol buyurtmalar</h2>
+      <div id="chefOrders" class="orders-grid"></div>
+    </section>
+
+    <section class="orders-section ready-section">
+      <h2 data-i18n="ready_orders_title">✅ Tayyor buyurtmalar</h2>
+      <div id="readyOrders" class="orders-grid"></div>
+    </section>
+
+  </main>
+  <div id="notification" class="notification"></div>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script type="module" src="js/langs.js"></script>
+  <script type="module" src="js/shared.js"></script>
+  <script src="js/chat-system.js"></script>
+  <script type="module" src="js/i18n.js"></script>
+  <script type="module" src="js/chef.js"></script>
+
+  <!-- ====== RESTORAN LOGOTIPI LOADER ====== -->
+  <script type="module">
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const _fbCfg = {
+      apiKey: "AIzaSyCGCCIP3eFg40bOEENDLGcrw9c484ySCHQ",
+      authDomain: "restoran-30d51.firebaseapp.com",
+      databaseURL: "https://restoran-30d51-default-rtdb.firebaseio.com",
+      projectId: "restoran-30d51",
+      storageBucket: "restoran-30d51.firebasestorage.app",
+      messagingSenderId: "862261129762",
+      appId: "1:862261129762:web:5577e6821b4ad7ea4e507b"
+    };
+    const _fbApp = getApps().length ? getApps()[0] : initializeApp(_fbCfg);
+    const _db = getDatabase(_fbApp);
+
+    function _applyLogo(url) {
+      if (!url) return;
+      document.querySelectorAll(
+        'img[src*="logo-cropped"], img[src*="logo (2)"], img[src*="logo%20(2)"]'
+      ).forEach(img => {
+        img.src = url;
+        img.style.objectFit = "contain";
+      });
+    }
+
+    const _restId = new URLSearchParams(location.search).get("rest")
+      || localStorage.getItem("restaurantId");
+
+    if (_restId) {
+      onValue(ref(_db, `restaurants/${_restId}/settings/restaurantLogoUrl`), snap => {
+        if (snap.exists() && snap.val()) _applyLogo(snap.val());
+      });
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="login_title">NestaCRM — Tizimga kirish</title>
+
+  <link rel="stylesheet" href="css/login.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="icon" href="img/logo (2).svg" type="image/svg+xml" />
+</head>
+
+<body>
+
+  <div style="position: absolute; top: 20px; right: 20px; z-index: 100;">
+    <select id="langSelect"
+      style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ddd; background: #fff; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 500; outline: none; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+      <option value="uz">UZ</option>
+      <option value="ru">RU</option>
+      <option value="en">EN</option>
+    </select>
+  </div>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+
+      <div class="brand-logo">
+        <div class="logo-icon"><img src="img/logo.png" alt="NestaCRM"></div>
+        Nesta<span>CRM</span>
+      </div>
+      <p class="subtitle" data-i18n="login_subtitle">Boshqaruv paneliga xush kelibsiz</p>
+
+      <div id="errorMsg" class="error-message" style="display: none;">
+        <i class="fa-solid fa-circle-exclamation"></i> <span></span>
+      </div>
+
+      <div class="form-group">
+        <label for="loginInput" data-i18n="login_label">Login</label>
+        <div class="input-with-icon">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" id="loginInput" data-i18n-placeholder="login_placeholder" placeholder="Loginni kiriting"
+            autocomplete="off">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="passwordInput" data-i18n="password_label">Parol</label>
+        <div class="input-with-icon">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="passwordInput" data-i18n-placeholder="password_placeholder" placeholder="••••••••">
+          <i class="fa-solid fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+        </div>
+      </div>
+
+      <button class="btn-login" id="loginBtn" data-i18n="login_btn">Tizimga kirish</button>
+
+      <div style="text-align: center; margin-top: 15px;">
+        <a href="guid.html" target="_blank"
+          style="color: #007bff; text-decoration: none; font-size: 14px; font-weight: 500;">
+          <i class="fas fa-book"></i> <span data-i18n="system_guide">Tizimdan foydalanish yo'riqnomasi</span>
+        </a>
+      </div>
+
+      <div class="footer-text">
+        <span data-i18n="support_text_1">Dasturiy ta'minot bo'yicha muammo bormi?</span><br>
+        <a href="help.html" target="_blank" data-i18n="support_text_2">Qo'llab-quvvatlash markazi</a>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="js/langs.js"></script>
+  <script type="module" src="js/i18n.js"></script>
+  <script type="module" src="js/login.js"></script>
+</body>
+
+</html>

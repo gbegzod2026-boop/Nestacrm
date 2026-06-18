@@ -1,0 +1,278 @@
+:root {
+  --primary-color: #2EBC58;
+  --primary-hover: #249845;
+  --primary-soft: #eaf8ed;
+
+  --bg-color: #F1F5F9;
+  --card-bg: #FFFFFF;
+  --text-main: #1A2530;
+  --text-muted: #64748B;
+  --border-color: #E2E8F0;
+
+  --danger-bg: #FEE2E2;
+  --danger-text: #EF4444;
+  --radius: 12px;
+
+  --shadow: 0 20px 40px rgba(46, 188, 88, 0.08);
+  --transition: 0.24s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(circle at top right, rgba(46, 188, 88, 0.12), transparent 30%),
+    radial-gradient(rgba(46, 188, 88, 0.05) 1px, transparent 1px);
+  background-size: auto, 22px 22px;
+}
+
+.login-wrapper {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.login-card {
+  background: var(--card-bg);
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(46, 188, 88, 0.1);
+}
+
+/* ========================================================
+   LOGOTIP UCHUN IXCHAM VA RESPONSIV DIZAYN
+======================================================== */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.brand-logo .logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;   
+  overflow: hidden;
+  flex-shrink: 0;
+  background-image: url("../img/logo.png");
+  background-color: #ffffff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 110%; 
+  box-shadow: 0 4px 10px rgba(46, 188, 88, 0.15);
+}
+
+.brand-logo .logo-icon img,
+.brand-logo .logo-icon i {
+  display: none !important;
+}
+
+.brand-logo span {
+  color: var(--primary-color);
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 15px;
+  margin-bottom: 30px;
+}
+
+.error-message {
+  display: none;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  padding: 12px 15px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  display: flex;
+  /* Ko'rinishi uchun buni HTML orqali o'zgartirasiz */
+  align-items: center;
+  gap: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-with-icon i.fa-user,
+.input-with-icon i.fa-lock {
+  position: absolute;
+  left: 15px;
+  color: #9CA3AF;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: 14px 45px 14px 45px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: 15px;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+  background: #F8FAFC;
+}
+
+/* Input bosilganda logotip yashiliga mos yaltirash (focus) */
+.input-with-icon input:focus {
+  background: #fff;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(46, 188, 88, 0.14);
+}
+
+#togglePassword {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #64748B;
+  font-size: 15px;
+  z-index: 10;
+  padding: 5px;
+  transition: color 0.2s;
+}
+
+#togglePassword:hover {
+  color: var(--primary-color);
+}
+
+.btn-login {
+  width: 100%;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+  margin-top: 10px;
+}
+
+.btn-login:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(46, 188, 88, 0.25);
+}
+
+.btn-login:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.footer-text {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.footer-text a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer-text a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   YORDAM VA QO'LLAB-QUVVATLASH MARKAZI
+========================================= */
+.login-support-links {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-support-links a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-support-links a i {
+  font-size: 16px;
+  color: #94A3B8;
+  transition: color 0.3s ease;
+}
+
+.login-support-links a:hover,
+.login-support-links a:hover i {
+  color: var(--primary-color);
+}
+
+.login-support-links .divider {
+  display: none;
+  color: #cbd5e1;
+  font-size: 18px;
+}
+
+@media (min-width: 480px) {
+  .login-support-links {
+    flex-direction: row;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .login-support-links .divider {
+    display: inline;
+  }
+}

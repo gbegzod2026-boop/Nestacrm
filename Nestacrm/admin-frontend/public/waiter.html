@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="uz">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title data-i18n="waiter_page_title">NestaCRM — Ofitsiant paneli</title>
+  <link rel="stylesheet" href="css/waiter.css">
+  <link rel="icon" href="img/logo (2).svg" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div id="system-block-overlay"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255, 255, 255, 0.98); z-index: 9999999; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: not-allowed;">
+    <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+      <i class="fa-solid fa-lock" style="font-size: 80px; color: #ef4444; margin-bottom: 25px; display: block;"></i>
+      <h1 data-i18n="system_blocked_title"
+        style="color: #1e293b; margin-bottom: 10px; font-family: 'Inter', sans-serif;">Tizim vaqtincha bloklangan</h1>
+      <p data-i18n="system_blocked_desc" style="color: #64748b; font-size: 18px; max-width: 400px;"></p>
+      <div style="margin-top: 30px; font-weight: 600; color: #3b82f6;">
+        <i class="fa-brands fa-telegram"></i> @nestacrm_admin
+      </div>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <header class="header"
+    style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px;">
+
+    <div class="header-left" style="display: flex; align-items: center; gap: 12px;">
+
+      <div style="
+          width: 48px; height: 48px; flex: 0 0 48px;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;">
+        <img src="img/logo (2).svg" alt="NestaCRM Logo"
+          style="width:48px; height:48px; object-fit:contain; border-radius:50%; display:block;">
+      </div>
+
+      <h1 style="margin:0; font-size:1.7rem; font-weight:800; display:flex; align-items:center; letter-spacing:-0.5px; line-height:1;">
+        <span style="color:#ffffff;">Nesta</span><span style="color:#22C55E;">CRM</span>
+        <span id="dynamicHeaderText"
+          style="font-size:1.05rem; color:#94a3b8; margin-left:10px; font-weight:600;"></span>
+      </h1>
+
+    </div>
+
+    <div class="header-actions" style="display: flex; gap: 10px;">
+
+      <select id="langSelect" class="lang-select"
+  style="padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(148,163,184,0.35); 
+         background: rgba(15,23,42,0.75); color: #fff;
+         display: inline-block !important; visibility: visible !important; 
+         opacity: 1 !important; z-index: 999; position: relative;">
+        <option value="uz" data-i18n="lang_uz">UZ</option>
+        <option value="ru" data-i18n="lang_ru">RU</option>
+        <option value="en" data-i18n="lang_en">EN</option>
+      </select>
+
+      <button class="btn-logout" onclick="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="logout">Chiqish</span>
+      </button>
+    </div>
+
+  </header>
+
+  <div class="main-container">
+
+    <aside class="sidebar">
+
+      <div class="card alert-section">
+        <h2 data-i18n="customer_calls">🛎 Mijoz Chaqiruvlari</h2>
+        <div id="waiterCalls" class="calls-container">
+          <p class="empty-state" data-i18n="no_calls_yet">Hozircha chaqiruvlar yo'q</p>
+        </div>
+      </div>
+
+      <div class="card alert-section">
+        <h2 data-i18n="cleaning_alerts">🧼 Tozalash Signallari</h2>
+        <div id="cleaningAlerts" class="cleaning-container">
+          <p class="empty-state" data-i18n="no_cleaning_alerts">Tozalash kerak stollar yo'q</p>
+        </div>
+      </div>
+
+    </aside>
+
+    <main class="content">
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h4 data-i18n="stat_today_delivered">📦 Bugun yetkazildi</h4>
+          <b id="statTodayDelivered">0</b>
+        </div>
+        <div class="stat-card">
+          <h4 data-i18n="stat_total_delivered">📊 Jami yetkazildi</h4>
+          <b id="statTotalDelivered">0</b>
+        </div>
+        <div class="stat-card">
+          <h4 data-i18n="stat_today_revenue">💰 Bugungi tushum</h4>
+          <b id="statTodayRevenue">0</b>
+        </div>
+        <div class="stat-card">
+          <h4 data-i18n="stat_avg_order">📈 O'rtacha buyurtma</h4>
+          <b id="statAvgOrder">0</b>
+        </div>
+        <div class="stat-card">
+          <h4 data-i18n="stat_tables_served">🪑 Qaralgan stollar</h4>
+          <b id="statTables">0</b>
+        </div>
+        <div class="stat-card highlight">
+          <h4 data-i18n="stat_loyal_customers">🎁 Sodiqlik mijozlar</h4>
+          <b id="statLoyalCustomers">0</b>
+        </div>
+        <div class="stat-card">
+          <h4 data-i18n="stat_active_tables">Faol stollar</h4>
+          <b id="statActiveTables">0</b>
+        </div>
+        <div class="stat-card">
+          <h4 data-i18n="stat_ready_to_serve">Yetkazishga tayyor</h4>
+          <b id="statReadyToServe">0</b>
+        </div>
+        <div class="stat-card">
+          <h4 data-i18n="stat_bills_pending">💳 To'lov kutilmoqda</h4>
+          <b id="statBillsPending">0</b>
+        </div>
+      </div>
+
+      <div class="orders-section" style="margin-bottom: 20px;">
+
+        <div class="card" style="border: 2px solid #22C55E;">
+          <h2 data-i18n="my_assigned_orders">🍽 Menga biriktirilgan (Olib borishim kerak)</h2>
+          <div id="myAssignedOrders" class="orders-grid">
+            <p class="empty-state" data-i18n="waiting_for_new_order">Hozircha bo'shsiz. Yangi buyurtma kutilmoqda...</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <h2 data-i18n="my_delivered_orders_today">✅ Men yetkazgan buyurtmalar (Bugun)</h2>
+          <div id="myDeliveredOrders" class="orders-grid compact">
+            <p class="empty-state" data-i18n="nothing_delivered_yet">Hali hech narsa yetkazilmadi</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="chart-wrapper card">
+        <h3 data-i18n="orders_statistics">📊 Buyurtmalar statistikasi</h3>
+        <canvas id="waiterChart" style="width:100%; height:260px; max-height:260px;"></canvas>
+        <div class="card" style="margin-top:18px">
+          <h2 data-i18n="live_tables_title">🪑 Jonli Stollar</h2>
+          <div id="liveTablesGrid" class="orders-grid">
+            <p class="empty-state" data-i18n="loading_tables">Stollar yuklanmoqda...</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+  <script>
+    function logout() {
+      localStorage.clear();
+      location.href = "login.html";
+    }
+  </script>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script type="module" src="js/langs.js"></script>
+  <script type="module" src="js/shared.js"></script>
+  <script src="js/chat-system.js"></script>
+  <script type="module" src="js/waiter.js"></script>
+
+  <!-- ====== RESTORAN LOGOTIPI LOADER ====== -->
+  <script type="module">
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const _fbCfg = {
+      apiKey: "AIzaSyCGCCIP3eFg40bOEENDLGcrw9c484ySCHQ",
+      authDomain: "restoran-30d51.firebaseapp.com",
+      databaseURL: "https://restoran-30d51-default-rtdb.firebaseio.com",
+      projectId: "restoran-30d51",
+      storageBucket: "restoran-30d51.firebasestorage.app",
+      messagingSenderId: "862261129762",
+      appId: "1:862261129762:web:5577e6821b4ad7ea4e507b"
+    };
+    const _fbApp = getApps().length ? getApps()[0] : initializeApp(_fbCfg);
+    const _db = getDatabase(_fbApp);
+
+    function _applyLogo(url) {
+      if (!url) return;
+      document.querySelectorAll(
+        'img[src*="logo-cropped"], img[src*="logo (2)"], img[src*="logo%20(2)"]'
+      ).forEach(img => {
+        img.src = url;
+        img.style.objectFit = "contain";
+      });
+    }
+
+    const _restId = new URLSearchParams(location.search).get("rest")
+      || localStorage.getItem("restaurantId");
+
+    if (_restId) {
+      onValue(ref(_db, `restaurants/${_restId}/settings/restaurantLogoUrl`), snap => {
+        if (snap.exists() && snap.val()) _applyLogo(snap.val());
+      });
+    }
+  </script>
+
+</body>
+
+</html>
